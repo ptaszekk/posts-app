@@ -20,3 +20,11 @@ export const createLocalObject = ( key: LocalStorageKeys, value: unknown ): Loca
     value: JSON.stringify(value),
   } )
 }
+
+export const getDataFromLocal =( key: string ): string | null => {
+  return localStorage.getItem(key)
+}
+
+export const saveDataToLocal = ( data: LocalObject[] ): void => {
+  data.forEach(( item ) => localStorage.setItem(item.key, item.value))
+}

@@ -12,11 +12,11 @@ import { ToolbarService } from '../../services/toolbar.service';
              changeDetection: ChangeDetectionStrategy.OnPush,
            })
 export class ToolbarComponent {
-  userMetadata$ = this.loginService.getUserMetadata$()
-  isUserLogged$ = this.loginService.getIsUserLogged$();
-  title$ = this.toolbarService.getTitle()
-  showGoHome$ = this.toolbarService.getIsEditMode$()
-  isLoginMode$ = this.toolbarService.getIsLoginMode$()
+  readonly userMetadata$ = this.loginService.getUserMetadata$()
+  readonly isUserLogged$ = this.loginService.getIsUserLogged$();
+  readonly title$ = this.toolbarService.getTitle()
+  readonly showGoHome$ = this.toolbarService.getIsEditMode$()
+  readonly isLoginMode$ = this.toolbarService.getIsLoginMode$()
 
   constructor( private loginService: LoginService,
     private toolbarService: ToolbarService,

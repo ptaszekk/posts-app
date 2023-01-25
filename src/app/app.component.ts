@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LocalStorageKeys } from './constants/app.constants';
+import { getDataFromLocal } from './helpers/data-service.helpers';
+import { isUserSavedInLocalStorage } from './helpers/login-service.helpers';
 import { DataService } from './services/data.service';
 import { LoginService } from './services/login.service';
 
@@ -15,10 +17,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.loginService.isUserInLocal()) {
-      this.dataService.fetchUsers$().subscribe(( usersSaved => {
-        if (usersSaved) {
-          this.loginService.logInUser(JSON.parse(<string> this.dataService.getDataFromLocal(LocalStorageKeys.LOGGED_USER)))
+    if (isUserSavedInLocalStorage()) {
+      this.dataService.fetchUsers$().subscribe(( (usersAreSavedInLocalStorage) => {
+        if (usersAreSavedInLocalStorage) {
+          this.loginService.logInUser(JSON.parse(<string> getDataFromLocal(LocalStorageKeys.LOGGED_USER)))
         }
       } ));
     }

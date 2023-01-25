@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   #subscription = new Subscription();
 
   dataSource = new MatTableDataSource<Post>(undefined);
-  tableColumns: string[] = TABLE_COLUMNS
+  readonly tableColumns: string[] = TABLE_COLUMNS
 
   constructor(
     private dataService: DataService,

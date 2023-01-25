@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     }));
 
-    this.#subscription.add(this.loginService.getIsUserLogged$().pipe(filter(Boolean)).subscribe(isUserLogged => {
+    this.#subscription.add(this.loginService.getIsUserLogged$().pipe(filter(Boolean)).subscribe((isUserLogged) => {
       if (isUserLogged) {
         this.router.navigate([ AppPaths.HOME ]).then()
       }

@@ -26,9 +26,9 @@ export class EditPostComponent implements OnInit, OnDestroy {
   #subscription = new Subscription()
   titleNotification$ = new BehaviorSubject<Notification | null>(null)
   descriptionNotification$ = new BehaviorSubject<Notification | null>(null)
-  maxLength = MaxLength;
   currentPost!: Post | null;
-  formField = EditPostFormFields
+  readonly maxLength = MaxLength;
+  readonly formField = EditPostFormFields
 
   constructor( private dataService: DataService,
     private loginService: LoginService,
