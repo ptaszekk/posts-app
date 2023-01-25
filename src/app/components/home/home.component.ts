@@ -23,7 +23,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
   @ViewChild(MatTable) table!: MatTable<Post>;
 
-  isUserLogged$ = this.loginService.getIsUserLogged$()
   notification$ = this.notifications.getNotification()
 
   #subscription = new Subscription();
@@ -42,8 +41,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.toolbarService.setTitle(ToolbarTitle.HOME)
-    this.dataService.fetchUsers$().subscribe()
-    this.dataService.fetchPosts();
+    this.dataService.fetchUsers$().subscribe((users)=>{
+      if (users) {
+        this.dataService.fetchPosts();
+      }
+    })
     this.#subscription.add(
       this.dataService.getPosts$().subscribe(( posts ) => {
         this.dataSource = new MatTableDataSource<Post>(posts);
