@@ -1,0 +1,29 @@
+<div class="m-5 d-flex justify-content-center">
+  <form class="d-flex flex-column">
+    <mat-form-field class="example-full-width m-1"
+                    appearance="fill">
+      <mat-label>User Name</mat-label>
+      <input matInput
+             placeholder="Enter your name..."
+             name="username"
+             (keyup)="removeNotification()"
+             [(ngModel)] ="username">
+      <button *ngIf="username"
+              matSuffix
+              mat-icon-button
+              aria-label="Clear"
+              (click)="username = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+    <app-notification class="align-content-center"
+                  *ngIf="(notification$ | async) as notification"
+                  [notification]="notification"></app-notification>
+    <button [disabled]="username.length === 0"
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="logInUser()">Login</button>
+  </form>
+</div>
+

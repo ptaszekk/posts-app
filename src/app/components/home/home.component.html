@@ -1,0 +1,36 @@
+<div class="container">
+  <app-notification *ngIf="(notification$ | async) as notification"
+                    [notification]="notification"></app-notification>
+  <div class="mat-elevation-z10 m-3 p-0">
+    <table mat-table class="data-table" [dataSource]="dataSource">
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef class="border width-textArea p-3">
+          <h5 class="mx-3 my-2">Title</h5>
+        </th>
+        <td mat-cell class="width-textArea" *matCellDef="let element">
+          <div>{{element.user?.name}}</div>
+          <div>
+            <a [href]="createLink(element.user?.company)">{{element.user?.company}}</a>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="post">
+        <th mat-header-cell *matHeaderCellDef class="border width-post p-3">
+          <h5 class="mx-3 my-2">Post</h5>
+        </th>
+        <td mat-cell *matCellDef="let element" class="border p-2">
+          <div>
+            <h5 class="mx-3 my-2 edit-link" (click)="editPost(element?.postId)">{{element?.title}}</h5>
+            <p class="mx-3 my-2">{{element?.body}}</p>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+    </table>
+    <mat-paginator #paginator [pageSizeOptions]="[10, 20]"
+                   showFirstLastButtons
+                   aria-label="Select page of posts">
+    </mat-paginator>
+  </div>
+</div>

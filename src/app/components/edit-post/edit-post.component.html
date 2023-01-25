@@ -1,0 +1,61 @@
+<div class="d=flex m-5">
+  <form class="d-flex flex-column form-width">
+    <mat-form-field appearance="fill">
+      <mat-label>Post Title</mat-label>
+      <input matInput="text"
+             required
+             [id]="formField.TITLE"
+             (keyup)="showLengthNotification($event)"
+             [(ngModel)]="title"
+             [maxlength]="maxLength.TITLE"
+             [ngModelOptions]="{standalone: true}"
+             placeholder="Enter title here..."
+             name="postTitle">
+    </mat-form-field>
+    <app-notification *ngIf="(titleNotification$ | async) as notification"
+                      [notification]="notification"></app-notification>
+    <mat-form-field appearance="fill">
+      <mat-label>Text</mat-label>
+      <textarea matInput="text-area"
+                [id]="formField.BODY"
+                (keyup)="showLengthNotification($event)"
+                [(ngModel)]="post"
+                [maxlength]="maxLength.BODY"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Enter post here..."></textarea>
+    </mat-form-field>
+    <app-notification *ngIf="(descriptionNotification$ | async) as notification"
+                      [notification]="notification"></app-notification>
+    <div class="d-flex justify-content-between">
+      <button mat-raised-button
+              class="m-1"
+              type="button"
+              (click)="cancel()"
+              color="primary">Cancel
+      </button>
+      <button *ngIf="!this.id; else elseBlock"
+              type="button"
+              class="m-1"
+              mat-raised-button
+              color="primary"
+              (click)="addPost()">Add Post
+      </button>
+      <ng-template #elseBlock>
+        <div>
+          <button mat-raised-button
+                  type="button"
+                  class="m-1"
+                  color="primary"
+                  (click)="deletePost()">Delete
+          </button>
+          <button mat-raised-button
+                  type="button"
+                  class="m-1"
+                  color="primary"
+                  (click)="editPost()">Save
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </form>
+</div>
