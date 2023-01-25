@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, take, tap, withLatestFrom } from 'rxjs/operators';
 import { AppPaths, AppUrl, LocalStorageKeys } from '../constants/app.constants';
-import { createLocalObject, mapPostUserData } from '../helpers/data-service.helpers';
+import { createLocalObject, getDataFromLocal, mapPostUserData, saveDataToLocal } from '../helpers/data-service.helpers';
 import { getNotification } from '../helpers/notification.helpers';
-import { InitialPost, LocalObject, NotificationText, Post, User } from '../model/app.model';
+import { InitialPost, NotificationText, Post, User } from '../model/app.model';
 import { NotificationsService } from './notifications.service';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class DataService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, this.#posts$.getValue()) ])
+    saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, this.#posts$.getValue()) ])
   }
 
   getUsers(): Observable<User[]> {
@@ -38,8 +38,8 @@ export class DataService implements OnDestroy {
   }
 
   fetchPosts(): void {
-    if (JSON.parse(<string> this.getDataFromLocal(LocalStorageKeys.POSTS)) !== null) {
-      const posts = JSON.parse(<string> this.getDataFromLocal(LocalStorageKeys.POSTS))
+    if (JSON.parse(<string> getDataFromLocal(LocalStorageKeys.POSTS)) !== null) {
+      const posts = JSON.parse(<string> getDataFromLocal(LocalStorageKeys.POSTS))
       this.#nextPostId$.next(posts.length + 1)
       this.#posts$.next(posts);
       return;
@@ -51,7 +51,7 @@ export class DataService implements OnDestroy {
           withLatestFrom(this.#users$)).subscribe(( [ posts, users ] ) => {
         this.#nextPostId$.next(posts.length)
         this.#posts$.next(mapPostUserData(posts, users));
-        this.saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, this.#posts$.getValue()) ])
+        saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, this.#posts$.getValue()) ])
       });
     }
   }
@@ -63,14 +63,14 @@ export class DataService implements OnDestroy {
   addPost( post: Post ): void {
     this.#nextPostId$.next(this.#nextPostId$.getValue() + 1);
     this.#posts$.next([ post, ...this.#posts$.getValue() ]);
-    this.saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, this.#posts$.getValue()) ])
+    saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, this.#posts$.getValue()) ])
     this.notifications.setNotification(getNotification(NotificationText.SUCCESSFUL_SAVE))
   }
 
   updatePost( updatedPost: Post ) {
     const posts = this.#posts$.getValue().map(( post ) => post.postId === updatedPost.postId ? updatedPost : post);
     this.#posts$.next(posts);
-    this.saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, posts) ])
+    saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, posts) ])
     this.router.navigate([ AppPaths.HOME ]).then();
   }
 
@@ -81,20 +81,11 @@ export class DataService implements OnDestroy {
   removePost( postId: number ): void {
     const posts = this.#posts$.getValue().filter(( post ) => post.postId !== postId);
     this.#posts$.next(posts)
-    this.saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, posts) ])
+    saveDataToLocal([ createLocalObject(LocalStorageKeys.POSTS, posts) ])
     this.notifications.setNotification(getNotification(NotificationText.SUCCESSFUL_DELETION))
   }
 
   getNextPostId(): Observable<number> {
     return this.#nextPostId$.asObservable()
-  }
-
-  saveDataToLocal( data: LocalObject[] ): void {
-    data.forEach(( item ) => localStorage.setItem(item.key, item.value))
-  }
-
-
-  getDataFromLocal( key: string ): string | null {
-    return localStorage.getItem(key)
   }
 }
